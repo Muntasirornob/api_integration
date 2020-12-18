@@ -1,11 +1,37 @@
+from django.shortcuts import render, HttpResponseRedirect
+from django.urls import reverse
 import requests
 import json
-from django.shortcuts import render
 from.forms import SubmitForm
 from.forms import PdfsubmitForm
 from django.contrib import messages
 from.models import Info,Pdf
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth.decorators import login_required
 # Create your views here.
+def login_page(request):
+    return render(request, 'api/login.html', context={})
+def user_login(request):
+    if request.method =='POST':
+        username = request.POST.get('username')
+        print(username)
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect(reverse('collectoken'))
+            else:
+                return HttpResponse("Account is not valid!!")
+        else:
+            return HttpResponse("Login Details are Wrong!")
+    else:
+   		return HttpResponseRedirect(reverse('login'))
+
+
+@login_required
 def collect_token(request):
 	url='https://recruitment.fisdev.com/api/login/'
 	payload={'username':'muntasirornob@gmail.com','password':'f1KyVhf87'}
@@ -21,7 +47,8 @@ def collect_token(request):
 		'token_code':token_code
 	}
 	return render(request,'api/apitoken.html',context)
-
+	
+@login_required
 def submit_form(request):
 	form=SubmitForm()
 	cgpa=3.44
@@ -30,7 +57,7 @@ def submit_form(request):
 		if form.is_valid():
 			form.save()
 		else:
-			print('haha')
+			messages.alert(request, "please submit the form correctly!")	
 		token_code=request.session['token']
 		token_id=token_code.get("token")
 		print(token_id)
@@ -46,7 +73,7 @@ def submit_form(request):
 		#if url_id:
 			#request.session['url']
 		print(json.dumps(payload))
-		url = 'https://recruitment.fisdev.com/api/v1/recruiting-entities/'
+		url = 'https://recruitment.fisdev.com/api/v0/recruiting-entities/'
 		headers={'Authorization': f'token {token_id}'}
 		response = requests.post(url, json= payload,headers=headers)
 		x=response.json()
@@ -57,10 +84,13 @@ def submit_form(request):
 			request.session['cv_id']=file_id
 			print(file_id)
 		print (response.json())
+		messages.success(request, "Form has been submitted!")
+		return HttpResponseRedirect(reverse('submitfile'))
 	form=SubmitForm()
 	context={'form':form}
 	return render(request,'api/form.html',context)
 
+@login_required
 def upload_file(request):
     if request.method == 'POST':
         form = PdfsubmitForm(request.POST, request.FILES)
@@ -75,29 +105,15 @@ def upload_file(request):
         print(files_url)   
         payload={}
         files1={'file':open(f'media/{files}','rb')}
-        #files1=[('file',(f'{files}',open({files},'rb'),'application/pdf'))]
-        #files1=[('file',(f'{files}',open(f'C:\Users\win 10\Desktop\apiproject\apitask\media\uploads\{files_url}','rb'),'application/pdf'))]
         url = f'https://recruitment.fisdev.com/api/file-object/{cv_id}/'
         print(url)
         headers={'Authorization': 'token be8796b9f6ca425c05a9a91aa4d29ef493d0553d'}
         response = requests.request("PUT", url, headers=headers, data=payload, files=files1)
-        print(response.json())
+        #print(response.json())
     else:
         form =PdfsubmitForm()
     return render(request, 'api/uploadfile.html', {'form': form})
 
-#def cvUpload(request):
-	#form=PdfsubmitForm()
-	#if request.method=='POST':
-		#form=SubmitForm(request.POST)
-		#if form.is_valid():
-			#form.save()
-		#else:
-			#print('haha')
-			#https://recruitment.fisdev.com/api/file-object/{FILE_TOKEN_ID}/
-			#https://recruitment.fisdev.com/api/file-object/{FILE_TOKEN_ID}/
-#with open ("sample.pdf", "rb") as f:
-   #pdf = pdf2.PdfFileReader(f)
-#files1=[
-  #('file',(f'{files}',open(f'{files_url}','rb'),'application/pdf'))
-#]
+
+
+
