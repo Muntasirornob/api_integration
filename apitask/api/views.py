@@ -47,11 +47,11 @@ def collect_token(request):
 		'token_code':token_code
 	}
 	return render(request,'api/apitoken.html',context)
-	
+
 @login_required
 def submit_form(request):
 	form=SubmitForm()
-	cgpa=3.44
+	#cgpa=3.44
 	if request.method=='POST':
 		form=SubmitForm(request.POST)
 		if form.is_valid():
@@ -66,7 +66,7 @@ def submit_form(request):
 		#cgpa=info.float_cgpa()
 		created=info.update_time_created()
 		updated=info.update_time_updated()
-		payload = {'tsync_id':info.tsync_id,'name':info.name,'email':info.email,'phone':info.phone,'full_address':info.full_address,'name_of_university':info.name_of_university,'graduation_year':info.graduation_year,'cgpa':cgpa,'experience_in_months':info.experience_in_months,'current_work_place_name':info.current_work_place_name,'applying_in':info.applying_in,'expected_salary':info.expected_salary,'field_buzz_reference':info.field_buzz_reference,'github_project_url':info.github_project_url,'cv_file':info.cv_file,'on_spot_update_time':updated,'on_spot_creation_time':created}
+		payload = {'tsync_id':info.tsync_id,'name':info.name,'email':info.email,'phone':info.phone,'full_address':info.full_address,'name_of_university':info.name_of_university,'graduation_year':info.graduation_year,'cgpa':info.cgpa,'experience_in_months':info.experience_in_months,'current_work_place_name':info.current_work_place_name,'applying_in':info.applying_in,'expected_salary':info.expected_salary,'field_buzz_reference':info.field_buzz_reference,'github_project_url':info.github_project_url,'cv_file':info.cv_file,'on_spot_update_time':updated,'on_spot_creation_time':created}
 		print(payload)
 
 		

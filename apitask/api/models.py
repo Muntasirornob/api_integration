@@ -1,5 +1,5 @@
 from django.db import models
-from.fields import IntegerRangeField
+from.fields import IntegerRangeField,FloatRangeField
 from .formatChecker import ContentTypeRestrictedFileField
 import jsonfield
 import uuid
@@ -17,7 +17,7 @@ class Info(models.Model):
 	full_address=models.CharField(max_length=512,blank=True)
 	name_of_university=models.CharField(max_length=256)
 	graduation_year=IntegerRangeField(min_value=2015, max_value=2020,blank=True)
-	cgpa=IntegerRangeField(min_value=2, max_value=4,blank=True)
+	cgpa=FloatRangeField(min_value=2.0, max_value=4.0,blank=True)
 	experience_in_months=IntegerRangeField(min_value=0, max_value=100)
 	current_work_place_name=models.CharField(max_length=256)
 	applying_in=models.CharField(max_length=10,choices=choices)
