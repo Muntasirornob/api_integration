@@ -13,6 +13,7 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 def login_page(request):
     return render(request, 'api/login.html', context={})
+    
 def user_login(request):
     if request.method =='POST':
         username = request.POST.get('username')
@@ -72,7 +73,7 @@ def submit_form(request):
 		
 		#if url_id:
 			#request.session['url']
-		print(json.dumps(payload))
+		#print(json.dumps(payload))
 		url = 'https://recruitment.fisdev.com/api/v0/recruiting-entities/'
 		headers={'Authorization': f'token {token_id}'}
 		response = requests.post(url, json= payload,headers=headers)
@@ -83,7 +84,7 @@ def submit_form(request):
 		if file_id:
 			request.session['cv_id']=file_id
 			print(file_id)
-		print (response.json())
+		#print (response.json())
 		messages.success(request, "Form has been submitted!")
 		return HttpResponseRedirect(reverse('submitfile'))
 	form=SubmitForm()
