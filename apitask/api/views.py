@@ -52,7 +52,6 @@ def collect_token(request):
 @login_required
 def submit_form(request):
 	form=SubmitForm()
-	#cgpa=3.44
 	if request.method=='POST':
 		form=SubmitForm(request.POST)
 		if form.is_valid():
@@ -63,17 +62,16 @@ def submit_form(request):
 		token_id=token_code.get("token")
 		print(token_id)
 		info=Info.objects.last()
-
-		#cgpa=info.float_cgpa()
+		#print(info)
 		created=info.update_time_created()
 		updated=info.update_time_updated()
 		payload = {'tsync_id':info.tsync_id,'name':info.name,'email':info.email,'phone':info.phone,'full_address':info.full_address,'name_of_university':info.name_of_university,'graduation_year':info.graduation_year,'cgpa':info.cgpa,'experience_in_months':info.experience_in_months,'current_work_place_name':info.current_work_place_name,'applying_in':info.applying_in,'expected_salary':info.expected_salary,'field_buzz_reference':info.field_buzz_reference,'github_project_url':info.github_project_url,'cv_file':info.cv_file,'on_spot_update_time':updated,'on_spot_creation_time':created}
-		print(payload)
+	
 
 		
 		#if url_id:
 			#request.session['url']
-		#print(json.dumps(payload))
+		print(json.dumps(payload))
 		url = 'https://recruitment.fisdev.com/api/v0/recruiting-entities/'
 		headers={'Authorization': f'token {token_id}'}
 		response = requests.post(url, json= payload,headers=headers)
@@ -84,7 +82,7 @@ def submit_form(request):
 		if file_id:
 			request.session['cv_id']=file_id
 			print(file_id)
-		#print (response.json())
+		print (response.json())
 		messages.success(request, "Form has been submitted!")
 		return HttpResponseRedirect(reverse('submitfile'))
 	form=SubmitForm()

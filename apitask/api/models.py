@@ -16,10 +16,10 @@ class Info(models.Model):
 	phone=models.CharField(max_length=14)
 	full_address=models.CharField(max_length=512,blank=True)
 	name_of_university=models.CharField(max_length=256)
-	graduation_year=IntegerRangeField(min_value=2015, max_value=2020,blank=True)
-	cgpa=FloatRangeField(min_value=2.0, max_value=4.0,blank=True)
-	experience_in_months=IntegerRangeField(min_value=0, max_value=100)
-	current_work_place_name=models.CharField(max_length=256)
+	graduation_year=IntegerRangeField(min_value=2015, max_value=2020)
+	cgpa=FloatRangeField(min_value=2.0, max_value=4.0,blank=True,null=True)
+	experience_in_months=IntegerRangeField(min_value=0, max_value=100,blank=True,null=True)
+	current_work_place_name=models.CharField(max_length=256,blank=True)
 	applying_in=models.CharField(max_length=10,choices=choices)
 	expected_salary=IntegerRangeField(min_value=15000, max_value=60000)
 	field_buzz_reference=models.CharField(max_length=256,blank=True)
@@ -46,10 +46,10 @@ class Info(models.Model):
 		update=self.created.timestamp()*1000
 		updated=int(update)
 		return updated
-	def float_cgpa(self):
-		cgp=self.cgpa
-		cgpa=float(cgp)
-		return cgpa
+	#def float_cgpa(self):
+		#cgp=self.cgpa
+		#cgpa=float(cgp)
+		#return cgpa
 
 
 	def save(self,*args,**kwargs):
